@@ -79,6 +79,14 @@ def configure_page_theme():
         }
         .stButton > button *, .stDownloadButton > button *,
         [data-testid="stFormSubmitButton"] > button * { color: #ffffff !important; fill: #ffffff !important; }
+        .stDownloadButton > button {
+            background: linear-gradient(135deg,#059669,#10b981) !important;
+            border: 1px solid #047857 !important;
+        }
+        .stDownloadButton > button:hover {
+            background: linear-gradient(135deg,#047857,#059669) !important;
+            border-color: #065f46 !important;
+        }
         section[data-testid="stSidebar"] * { color: __SIDEBAR_TEXT__ !important; }
         section[data-testid="stSidebar"] p { color: __MUTED__ !important; }
         section[data-testid="stSidebar"] a[data-testid="stSidebarNavLink"] {

@@ -7,6 +7,7 @@ from database.db import engine
 try:
     style_dataframe
 except NameError:
+    from ui.downloads import excel_download_button
     from ui.theme import configure_page_theme, style_dataframe
 
     configure_page_theme()
@@ -339,6 +340,7 @@ else:
         "Check",
     ]
 
+    excel_download_button(display_orders, "orders.xlsx", "download_orders")
     st.dataframe(
         style_dataframe(display_orders),
         use_container_width=True,
@@ -510,6 +512,7 @@ if order_ids:
                 "Check",
             ]
 
+            excel_download_button(display_items, "order_items.xlsx", "download_order_items")
             st.dataframe(
                 style_dataframe(display_items),
                 use_container_width=True,

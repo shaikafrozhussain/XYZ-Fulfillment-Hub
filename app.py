@@ -4,6 +4,7 @@ import plotly.express as px
 from sqlalchemy import text
 
 from database.db import engine
+from ui.downloads import excel_download_button
 from ui.theme import style_dataframe
 
 
@@ -1854,6 +1855,14 @@ st.markdown(
     .stButton > button *, .stDownloadButton > button *, [data-testid="stFormSubmitButton"] > button * {
         color: #ffffff !important; fill: #ffffff !important;
     }
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #059669, #10b981) !important;
+        border: 1px solid #047857 !important;
+    }
+    .stDownloadButton > button:hover {
+        background: linear-gradient(135deg, #047857, #059669) !important;
+        border-color: #065f46 !important;
+    }
     [data-testid="stMainBlockContainer"] { max-width: 1500px; padding-top: 2rem; }
     div[data-testid="stMetric"] { padding: 1rem 1.1rem; transition: transform .18s ease, box-shadow .18s ease; }
     div[data-testid="stMetric"]:hover { transform: translateY(-2px); }
@@ -2252,6 +2261,8 @@ if page == "Dashboard":
     )
 
     if not priority_orders.empty:
+
+        excel_download_button(priority_orders, "priority_orders.xlsx", "download_priority_orders")
 
         st.dataframe(
             style_dataframe(priority_orders),
