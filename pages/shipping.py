@@ -4,6 +4,13 @@ from sqlalchemy import text
 
 from database.db import engine
 
+try:
+    style_dataframe
+except NameError:
+    from ui.theme import configure_page_theme, style_dataframe
+
+    configure_page_theme()
+
 
 def get_dataframe(query, params=None):
     with engine.connect() as conn:
@@ -26,7 +33,7 @@ def execute_query(query, params=None):
 # PAGE HEADER
 # =========================================================
 
-st.title("🚚 Shipping")
+st.title("Shipping", icon=":material/local_shipping:")
 st.caption(
     "Track packed orders, staging, courier pickup, and delivery."
 )
@@ -73,7 +80,7 @@ c1.metric("Packed Orders", f"{int(packed):,}")
 c2.metric("Ready", f"{int(ready):,}")
 c3.metric("Staged", f"{int(staged):,}")
 c4.metric("Picked Up", f"{int(picked_up):,}")
-c5.metric("⚠️ Missed", f"{int(missed_pickups):,}")
+c5.metric("Missed", f"{int(missed_pickups):,}")
 
 
 st.divider()
@@ -300,9 +307,9 @@ else:
     ]
 
     st.dataframe(
-        display_df,
+        style_dataframe(display_df),
         use_container_width=True,
-        hide_index=True
+        hide_index=True,
     )
 
 
@@ -314,7 +321,7 @@ if not shipments_df.empty:
 
     st.divider()
 
-    st.subheader("📦 Shipment Details")
+    st.subheader("Shipment Details")
 
 
     shipment_options = shipments_df[
@@ -383,7 +390,7 @@ if not shipments_df.empty:
     if current_status == "PICKUP_MISSED":
 
         st.error(
-            "🚨 Courier pickup was missed. "
+            "Courier pickup was missed. "
             "This shipment needs attention."
         )
 
@@ -391,35 +398,35 @@ if not shipments_df.empty:
     elif current_status == "READY":
 
         st.info(
-            "📦 Package is ready to be moved to staging."
+            "Package is ready to be moved to staging."
         )
 
 
     elif current_status == "STAGED":
 
         st.warning(
-            "📍 Package is staged and waiting for courier pickup."
+            "Package is staged and waiting for courier pickup."
         )
 
 
     elif current_status == "PICKED_UP":
 
         st.info(
-            "🚚 Courier has picked up the package."
+            "Courier has picked up the package."
         )
 
 
     elif current_status == "IN_TRANSIT":
 
         st.info(
-            "🚛 Package is currently in transit."
+            "Package is currently in transit."
         )
 
 
     elif current_status == "DELIVERED":
 
         st.success(
-            "✅ Package has been delivered."
+            "Package has been delivered."
         )
 
 
@@ -439,7 +446,7 @@ if not shipments_df.empty:
     if current_status == "READY":
 
         if st.button(
-            "📍 Move to Staging",
+            "Move to Staging",
             type="primary"
         ):
 
@@ -470,7 +477,7 @@ if not shipments_df.empty:
     elif current_status == "STAGED":
 
         if st.button(
-            "🚚 Mark Courier Pickup",
+            "Mark Courier Pickup",
             type="primary"
         ):
 
@@ -506,7 +513,7 @@ if not shipments_df.empty:
 
 
         if st.button(
-            "🚚 Record Successful Pickup",
+            "Record Successful Pickup",
             type="primary"
         ):
 
@@ -537,7 +544,7 @@ if not shipments_df.empty:
     elif current_status == "PICKED_UP":
 
         if st.button(
-            "🚛 Mark In Transit",
+            "Mark In Transit",
             type="primary"
         ):
 
@@ -583,7 +590,7 @@ if not shipments_df.empty:
     elif current_status == "IN_TRANSIT":
 
         if st.button(
-            "✅ Mark Delivered",
+            "Mark Delivered",
             type="primary"
         ):
 
@@ -629,5 +636,5 @@ if not shipments_df.empty:
     elif current_status == "DELIVERED":
 
         st.success(
-            "🎉 This fulfillment is complete."
+            "This fulfillment is complete."
         )

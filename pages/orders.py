@@ -4,6 +4,13 @@ from sqlalchemy import text
 
 from database.db import engine
 
+try:
+    style_dataframe
+except NameError:
+    from ui.theme import configure_page_theme, style_dataframe
+
+    configure_page_theme()
+
 
 # ============================================================
 # DATABASE HELPERS
@@ -34,7 +41,7 @@ def get_scalar(query, params=None):
 # PAGE HEADER
 # ============================================================
 
-st.title("📦 Orders")
+st.title("Orders", icon=":material/receipt_long:")
 
 st.caption(
     "Monitor orders, priorities, deadlines and fulfillment status."
@@ -271,9 +278,9 @@ else:
         display_orders["priority"]
         .map(
             {
-                "URGENT": "🔴 URGENT",
-                "HIGH": "🟠 HIGH",
-                "NORMAL": "🟢 NORMAL",
+                "URGENT": "URGENT",
+                "HIGH": "HIGH",
+                "NORMAL": "NORMAL",
             }
         )
     )
@@ -294,7 +301,7 @@ else:
         display_orders["delayed"]
         .map(
             {
-                1: "🔴 Delayed",
+                1: "Delayed",
                 0: "✓",
             }
         )
@@ -304,7 +311,7 @@ else:
         display_orders["mismatch"]
         .map(
             {
-                1: "⚠️ Mismatch",
+                1: "Mismatch",
                 0: "✓",
             }
         )
@@ -333,7 +340,7 @@ else:
     ]
 
     st.dataframe(
-        display_orders,
+        style_dataframe(display_orders),
         use_container_width=True,
         hide_index=True,
     )
@@ -428,14 +435,14 @@ if order_ids:
         ):
 
             st.error(
-                f"🔴 Order deadline passed: "
+                f"Order deadline passed: "
                 f"{deadline.strftime('%d %b %Y, %H:%M')}"
             )
 
         else:
 
             st.info(
-                f"⏱ Deadline: "
+                f"Deadline: "
                 f"{deadline.strftime('%d %b %Y, %H:%M')}"
             )
 
@@ -475,7 +482,7 @@ if order_ids:
 
             items["check"] = items.apply(
                 lambda row:
-                "⚠️ MISMATCH"
+                "MISMATCH"
                 if row["sku"] != row["picked_sku"]
                 else "✓ MATCH",
                 axis=1,
@@ -504,7 +511,7 @@ if order_ids:
             ]
 
             st.dataframe(
-                display_items,
+                style_dataframe(display_items),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -520,7 +527,7 @@ if order_ids:
             if not mismatch_items.empty:
 
                 st.warning(
-                    "⚠️ One or more items do not match "
+                    "One or more items do not match "
                     "the expected product."
                 )
 
@@ -585,4 +592,3 @@ if order_ids:
             st.write(
                 "  →  ".join(timeline)
             )
-            

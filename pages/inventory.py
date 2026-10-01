@@ -4,6 +4,13 @@ from sqlalchemy import text
 
 from database.db import engine
 
+try:
+    style_dataframe
+except NameError:
+    from ui.theme import configure_page_theme, style_dataframe
+
+    configure_page_theme()
+
 
 def get_dataframe(query, params=None):
     with engine.connect() as conn:
@@ -16,7 +23,7 @@ def get_scalar(query, params=None):
         return result.scalar()
 
 
-st.title("📦 Inventory")
+st.title("Inventory", icon=":material/inventory_2:")
 st.caption("Monitor stock availability and identify physical stock mismatches.")
 
 # ---------------------------------------------------------
@@ -211,9 +218,9 @@ else:
     ]
 
     st.dataframe(
-        display_df,
+        style_dataframe(display_df),
         use_container_width=True,
-        hide_index=True
+        hide_index=True,
     )
 
 
@@ -225,7 +232,7 @@ if not df.empty:
 
     st.divider()
 
-    st.subheader("🔎 Inventory Details")
+    st.subheader("Inventory Details")
 
     options = df["sku"].tolist()
 
@@ -270,7 +277,7 @@ if not df.empty:
         difference = physical_stock - system_stock
 
         st.error(
-            f"⚠️ Inventory mismatch detected: "
+            f"Inventory mismatch detected: "
             f"system shows {system_stock} units, "
             f"but physical stock shows {physical_stock} units."
         )
@@ -289,17 +296,17 @@ if not df.empty:
     elif int(selected["available_stock"]) <= 0:
 
         st.error(
-            "🚨 This product currently has no available stock."
+            "This product currently has no available stock."
         )
 
     elif int(selected["available_stock"]) <= 10:
 
         st.warning(
-            "⚠️ Low available stock. Consider checking replenishment."
+            "Low available stock. Consider checking replenishment."
         )
 
     else:
 
         st.success(
-            "✅ Stock levels look healthy."
+            "Stock levels look healthy."
         )

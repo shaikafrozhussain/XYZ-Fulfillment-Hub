@@ -4,6 +4,13 @@ from sqlalchemy import text
 
 from database.db import engine
 
+try:
+    style_dataframe
+except NameError:
+    from ui.theme import configure_page_theme, style_dataframe
+
+    configure_page_theme()
+
 
 def get_dataframe(query, params=None):
     with engine.connect() as conn:
@@ -26,7 +33,7 @@ def execute_query(query, params=None):
 # PAGE HEADER
 # =========================================================
 
-st.title("🚨 Issues")
+st.title("Issues", icon=":material/report:")
 st.caption(
     "Track operational problems that need attention."
 )
@@ -248,7 +255,7 @@ st.subheader("Issue Queue")
 if issues_df.empty:
 
     st.success(
-        "✅ No issues match the selected filters."
+        "No issues match the selected filters."
     )
 
 else:
@@ -276,9 +283,9 @@ else:
     ]
 
     st.dataframe(
-        display_df,
+        style_dataframe(display_df),
         use_container_width=True,
-        hide_index=True
+        hide_index=True,
     )
 
 
@@ -290,7 +297,7 @@ if not issues_df.empty:
 
     st.divider()
 
-    st.subheader("🔎 Issue Details")
+    st.subheader("Issue Details")
 
     issue_options = issues_df[
         "issue_id"
@@ -366,13 +373,13 @@ if not issues_df.empty:
     if issue["severity"] == "CRITICAL":
 
         st.error(
-            "🚨 Critical issue requires immediate attention."
+            "Critical issue requires immediate attention."
         )
 
     elif issue["severity"] == "HIGH":
 
         st.warning(
-            "⚠️ High-priority issue requires attention."
+            "High-priority issue requires attention."
         )
 
 
@@ -391,7 +398,7 @@ if not issues_df.empty:
     if current_status == "OPEN":
 
         if st.button(
-            "🔄 Mark In Progress",
+            "Mark In Progress",
             type="primary"
         ):
 
@@ -418,7 +425,7 @@ if not issues_df.empty:
     elif current_status == "IN_PROGRESS":
 
         if st.button(
-            "✅ Resolve Issue",
+            "Resolve Issue",
             type="primary"
         ):
 
@@ -445,5 +452,5 @@ if not issues_df.empty:
     else:
 
         st.success(
-            "✅ This issue has already been resolved."
+            "This issue has already been resolved."
         )

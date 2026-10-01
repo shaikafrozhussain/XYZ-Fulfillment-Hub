@@ -4,6 +4,13 @@ from sqlalchemy import text
 
 from database.db import engine
 
+try:
+    style_dataframe
+except NameError:
+    from ui.theme import configure_page_theme, style_dataframe
+
+    configure_page_theme()
+
 
 def get_dataframe(query, params=None):
     with engine.connect() as conn:
@@ -22,7 +29,7 @@ def execute_query(query, params=None):
         )
 
 
-st.title("🛒 Picking")
+st.title("Picking", icon=":material/shopping_cart:")
 st.caption("Pick the correct products for each order before packing.")
 
 
@@ -99,7 +106,7 @@ st.divider()
 
 if orders_df.empty:
 
-    st.success("🎉 No orders are currently waiting for picking.")
+    st.success("No orders are currently waiting for picking.")
 
 else:
 
@@ -124,9 +131,9 @@ else:
     ]
 
     st.dataframe(
-        display_orders,
+        style_dataframe(display_orders),
         use_container_width=True,
-        hide_index=True
+        hide_index=True,
     )
 
     order_ids = orders_df["id"].tolist()
@@ -176,12 +183,12 @@ else:
 
     if order["timing"] == "Delayed":
         st.error(
-            "🚨 This order is past its deadline."
+            "This order is past its deadline."
         )
 
     elif order["timing"] == "Due Soon":
         st.warning(
-            "⚠️ This order is approaching its deadline."
+            "This order is approaching its deadline."
         )
 
 
@@ -360,7 +367,7 @@ else:
             if not product_matches or not variant_matches:
 
                 st.error(
-                    "⚠️ PICKING MISMATCH"
+                    "PICKING MISMATCH"
                 )
 
                 st.write(
@@ -378,7 +385,7 @@ else:
             else:
 
                 st.success(
-                    "✅ Correct product and variant"
+                    "Correct product and variant"
                 )
 
 
@@ -451,18 +458,18 @@ else:
     if int(remaining) > 0:
 
         st.warning(
-            f"⚠️ {int(remaining)} item(s) still need "
+            f" {int(remaining)} item(s) still need "
             "attention before this order can be completed."
         )
 
     else:
 
         st.success(
-            "✅ All items match the expected products."
+            "All items match the expected products."
         )
 
         if st.button(
-            "✅ Mark Picking Complete",
+            "Mark Picking Complete",
             type="primary"
         ):
 
